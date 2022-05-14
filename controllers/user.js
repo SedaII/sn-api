@@ -39,7 +39,7 @@ exports.login = (req, res, next) => {
       }
 
       req.session.userId = user.id;
-      return res.status(200).json({ message: "Vous êtes bien connecté"});
+      return res.status(200).json({ message: "Vous êtes bien connecté", firstname: user.firstname, lastname: user.lastname, job: user.job});
     })
     .catch(error => res.status(500).json({ error }));
   })

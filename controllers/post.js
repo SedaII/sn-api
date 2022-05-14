@@ -52,7 +52,7 @@ exports.delete = async (req, res, next) => {
     });
   } else {
     return res
-      .status(401)
+      .status(403)
       .json({ message: "You're not the author of the post" });
   }
 };
