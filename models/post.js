@@ -9,6 +9,10 @@ module.exports = (sequelize) => {
     title: {
       type: DataTypes.STRING,
     allowNull: true
+    },
+    description: {
+      type: DataTypes.STRING,
+    allowNull: true
     }
   }, { sequelize });
 }

@@ -9,6 +9,7 @@ exports.create = async (req, res, next) => {
       ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
       : req.body.image,
     UserId: req.session.userId,
+    description: req.body.description
   })
     .then(() => res.status(201).json({ message: "Post créé !" }))
     .catch((error) => res.status(400).json({ error }));
@@ -27,7 +28,7 @@ exports.getAllPosts = async (req, res, next) => {
       { model: User, as: "author", attributes: ["fullname", "firstname", "lastname"] },
     ],
     order: [["createdAt", "DESC"]],
-    attributes: ["id", "image", "title", "createdAt"]
+    attributes: ["id", "image", "title", "createdAt", "description"]
   })
     .then((posts) => res.status(200).json({ posts }))
     .catch((error) => res.status(400).json({ error }));

@@ -62,7 +62,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/comment", commentRoutes);
 
-app.use("/images", express.static(path.resolve(__dirname, "..") + "/images"));
+app.use("/images", express.static(path.resolve(__dirname) + "/images"));
 
 app.use("/", (req, res) => res.status(200).json({message: "Serveur en marche !"}));
 
