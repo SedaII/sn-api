@@ -24,7 +24,10 @@ const { Sequelize } = require("sequelize");
     as: "author",
     foreignKey: "UserId",
   });
-  Post.hasMany(Comment);
+  Post.hasMany(Comment, {
+    as: "comments",
+    foreignKey: "PostId",
+  });
 
   Comment.belongsTo(Post);
   Comment.belongsTo(User, {

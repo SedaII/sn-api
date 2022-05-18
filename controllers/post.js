@@ -20,6 +20,7 @@ exports.getAllPosts = async (req, res, next) => {
     include: [
       {
         model: Comment,
+        as: "comments",
         attributes: ["id", "content", "createdAt", "UserId"],
         include: { model: User, as: "author", attributes: ["fullname", "firstname", "lastname"] },
         limit: 2,
@@ -41,8 +42,10 @@ exports.delete = async (req, res, next) => {
     },
   });
   if (req.session.userId === post.UserId) {
-    const filename = post.image.split("/images/")[1];
-    fs.unlink(`images/${filename}`, () => {
+    if(post.image) {
+      const filename = post.image.split("/images/")[1];
+      fs.unlink(`images/${filename}`, (error) => console.log(error));
+    }
       Post.destroy({
         where: {
           id: req.params.id,
@@ -50,7 +53,7 @@ exports.delete = async (req, res, next) => {
       })
         .then(() => res.status(201).json({ message: "Post supprimé !" }))
         .catch((error) => res.status(400).json({ error }));
-    });
+
   } else {
     return res
       .status(403)
