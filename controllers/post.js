@@ -22,11 +22,11 @@ exports.getAllPosts = async (req, res, next) => {
         model: Comment,
         as: "comments",
         attributes: ["id", "content", "createdAt", "UserId"],
-        include: { model: User, as: "author", attributes: ["fullname", "firstname", "lastname"] },
+        include: { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
         limit: 2,
         order: [["createdAt", "DESC"]],
       },
-      { model: User, as: "author", attributes: ["fullname", "firstname", "lastname"] },
+      { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
     ],
     order: [["createdAt", "DESC"]],
     attributes: ["id", "image", "title", "createdAt", "description"]
