@@ -1,9 +1,24 @@
 const { Comment, Post, User } = require("../config/db").models;
 const fs = require("fs");
 
+Post.addScope("postForVue", {
+  include: [
+    {
+      model: Comment,
+      as: "comments",
+      attributes: ["id", "content", "createdAt", "UserId"],
+      include: { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
+      limit: 2,
+      order: [["createdAt", "DESC"]],
+    },
+    { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
+  ],
+  order: [["createdAt", "DESC"]],
+  attributes: ["id", "image", "title", "createdAt", "description"]
+});
+
 exports.create = async (req, res, next) => {
   Post.create({
-    author_name: req.body.author_name,
     title: req.body.title,
     image: req.file
       ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
@@ -11,26 +26,16 @@ exports.create = async (req, res, next) => {
     UserId: req.session.userId,
     description: req.body.description
   })
-    .then(() => res.status(201).json({ message: "Post créé !" }))
+    .then((post) => {
+      Post.scope("postForVue").findOne({where: { id: post.id}})
+      .then((post) =>  res.status(201).json({ message: "Post créé !", post: post }))
+      .catch((error) => res.status(400).json({ error }));
+    })
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.getAllPosts = async (req, res, next) => {
-  Post.findAll({
-    include: [
-      {
-        model: Comment,
-        as: "comments",
-        attributes: ["id", "content", "createdAt", "UserId"],
-        include: { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
-        limit: 2,
-        order: [["createdAt", "DESC"]],
-      },
-      { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
-    ],
-    order: [["createdAt", "DESC"]],
-    attributes: ["id", "image", "title", "createdAt", "description"]
-  })
+  Post.scope("postForVue").findAll()
     .then((posts) => res.status(200).json({ posts }))
     .catch((error) => res.status(400).json({ error }));
 };
