@@ -1,7 +1,14 @@
 const { Model, DataTypes } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 class User extends Model {}
 module.exports = (sequelize) => {
     User.init({
+      id: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: uuidv4()
+      },
       email: {
         type: DataTypes.STRING,
         unique: true
