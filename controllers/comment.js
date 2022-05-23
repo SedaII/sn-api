@@ -38,7 +38,7 @@ exports.delete = async (req, res, next) => {
       id: req.params.id,
     },
   });
-  if (req.session.userId === comment.UserId) {
+  if (req.session.userId === comment.UserId || req.session.isAdmin) {
     comment
       .destroy({
         where: {

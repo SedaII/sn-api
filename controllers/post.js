@@ -73,7 +73,7 @@ exports.delete = async (req, res, next) => {
       id: req.params.id,
     },
   });
-  if (req.session.userId === post.UserId) {
+  if (req.session.userId === post.UserId || req.session.isAdmin) {
     if(post.image) {
       const filename = post.image.split("/images/")[1];
       fs.unlink(`images/${filename}`, (error) => console.log(error));
