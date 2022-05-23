@@ -33,6 +33,10 @@ module.exports = (sequelize) => {
       job: {
         type: DataTypes.STRING,
       allowNull: true
-      }
+      },
+      isAdmin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
     }, { sequelize });
 }
