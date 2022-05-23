@@ -1,4 +1,12 @@
 const { Comment, User } = require("../config/db").models;
+Comment.addScope("comment", {
+  include: {
+    model: User,
+    as: "author",
+    attributes: ["fullname", "firstname", "lastname", "id"],
+  },
+  attributes: ["id", "content", "createdAt"]
+});
 
 exports.create = async (req, res, next) => {
   console.log(req.body.post_id);
@@ -8,19 +16,17 @@ exports.create = async (req, res, next) => {
     PostId: req.body.post_id,
     UserId: req.session.userId,
   })
-    .then(() => res.status(201).json({ message: "Commentaire créé !" }))
+    .then((comment) => {
+      Comment.scope("comment").findOne({where: { id: comment.id}})
+      .then((comment) =>  res.status(201).json({ message: "Commentaire créé !", comment: comment }))
+      .catch((error) => res.status(400).json({ error }));
+    })
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.getCommentsByPost = async (req, res, next) => {
-  Comment.findAll({
+  Comment.scope("comment").findAll({
     where: { PostId: req.params.id },
-    include: {
-      model: User,
-      as: "author",
-      attributes: ["fullname", "firstname", "lastname", "id"],
-    },
-    attributes: ["id", "content", "createdAt"],
   })
     .then((comments) => res.status(200).json({ comments }))
     .catch((error) => res.status(400).json({ error }));
