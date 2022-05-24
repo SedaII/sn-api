@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
-        defaultValue: uuidv4()
+        defaultValue: DataTypes.UUIDV4
       },
       email: {
         type: DataTypes.STRING,
@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
       },
       job: {
         type: DataTypes.STRING,
-      allowNull: true
+        allowNull: true
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
