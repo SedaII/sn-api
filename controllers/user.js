@@ -48,7 +48,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-  req.session.destroy()
+  req.session = null;
   return res.status(200).json({ message: "Vous êtes bien déconnecté" });
 };
 
