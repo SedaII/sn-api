@@ -47,6 +47,11 @@ exports.login = (req, res, next) => {
   .catch(error => res.status(500).json({ error }));
 };
 
+exports.logout = (req, res, next) => {
+  req.session.destroy()
+  return res.status(200).json({ message: "Vous êtes bien déconnecté" });
+};
+
 exports.deleteAccount = (req, res, next) => {
   User.destroy({
     where: {

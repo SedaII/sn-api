@@ -24,7 +24,7 @@ try {
   }
   db.authenticate()
   .then(console.log("Connection has been established successfully."));
-  db.sync()
+  db.sync(/* {force: true} */)
   .then(console.log("All models were synchronized successfully."));
 } catch (error) {
   console.error("Unable to connect to the database:", error);
@@ -64,7 +64,7 @@ app.use("/api/comment", commentRoutes);
 
 app.use("/images", express.static(path.resolve(__dirname) + "/images"));
 
-app.use("/", (req, res) => res.status(200).json({message: "Serveur en marche !"}));
+app.use("/", (req, res) => res.status(200).json({message: "Session valide !"}));
 
 
 module.exports = app;

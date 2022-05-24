@@ -4,10 +4,13 @@ const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
+router.get("/", auth);
 
 router.post("/signup", userController.signUp);
 
 router.post("/login", userController.login);
+
+router.get("/logout", auth, userController.logout);
 
 router.delete("/delete-account", auth, userController.deleteAccount);
 
