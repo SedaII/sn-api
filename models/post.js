@@ -13,6 +13,10 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.STRING,
     allowNull: true
+    },
+    commentCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, { sequelize });
 }

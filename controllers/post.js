@@ -2,24 +2,7 @@ const { Comment, Post, User } = require("../config/db").models;
 const fs = require("fs");
 const Sequelize = require("sequelize");
 
-Post.addScope("postForVuePreview", {
-  include: [
-    {
-      model: Comment,
-      as: "comments",
-      attributes: ["id", "content", "createdAt", "UserId"],
-      include: { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
-      limit: 2,
-      order: [["createdAt", "DESC"]],
-      separate: false
-    },
-    { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
-  ],
-  order: [["createdAt", "DESC"]],
-  attributes: ["id", "image", "title", "createdAt", "description"]
-});
-
-Post.addScope("postForVueFull", {
+Post.addScope("postForVue", {
   include: [
     {
       model: Comment,
@@ -31,7 +14,7 @@ Post.addScope("postForVueFull", {
     { model: User, as: "author", attributes: ["fullname", "firstname", "lastname", "id"] },
   ],
   order: [["createdAt", "DESC"]],
-  attributes: ["id", "image", "title", "createdAt", "description"]
+  attributes: ["id", "image", "title", "createdAt", "description", "commentCount"]
 });
 
 exports.create = async (req, res, next) => {
@@ -44,7 +27,7 @@ exports.create = async (req, res, next) => {
     description: req.body.description
   })
     .then((post) => {
-      Post.scope("postForVuePreview").findOne({where: { id: post.id}})
+      Post.scope("postForVue").findOne({where: { id: post.id}})
       .then((post) =>  res.status(201).json({ message: "Post créé !", post: post }))
       .catch((error) => res.status(400).json({ error }));
     })
@@ -52,13 +35,20 @@ exports.create = async (req, res, next) => {
 };
 
 exports.getAllPosts = async (req, res, next) => {
-  Post.scope("postForVuePreview").findAll()
-    .then((posts) => res.status(200).json({ posts }))
+  Post.scope("postForVue").findAll()
+    .then((posts) => {
+      posts.map(post => {
+        console.log(post.comments.length);
+        post.commentCount = post.comments.length;
+        post.comments = post.comments.slice(0, 2);
+      })
+      return res.status(200).json({ posts });
+    })
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.getPostById = async (req, res, next) => {
-  Post.scope("postForVueFull").findOne({
+  Post.scope("postForVue").findOne({
     where: {
       id: req.params.id
     }

@@ -26,6 +26,12 @@ try {
   .then(console.log("Connection has been established successfully."));
   db.sync(/* {force: true} */)
   .then(console.log("All models were synchronized successfully."));
+  db.query("CREATE TRIGGER Comments_after_insert AFTER INSERT ON Comments FOR EACH ROW UPDATE Posts SET commentCount = commentCount + 1 WHERE id = new.PostId")
+  .then(() => console.log("Comments_after_insert trigger created"))
+  .catch(error => console.log(error.original.sqlMessage));
+  db.query("CREATE TRIGGER Comments_after_delete AFTER DELETE ON Comments FOR EACH ROW UPDATE Posts SET commentCount = commentCount - 1 WHERE id = old.PostId")
+  .then(() => console.log("Comments_after_delete trigger created"))
+  .catch(error => console.log(error.original.sqlMessage));
 } catch (error) {
   console.error("Unable to connect to the database:", error);
 };

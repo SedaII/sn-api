@@ -48,8 +48,13 @@ exports.login = (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-  req.session = null;
-  return res.status(200).json({ message: "Vous êtes bien déconnecté" });
+  req.session.destroy((err) => {
+    if (err) {
+        console.log(err)
+        return next(err)
+      }
+      return res.status(200).json({ message: "Vous êtes bien déconnecté" });
+});
 };
 
 exports.deleteAccount = (req, res, next) => {
