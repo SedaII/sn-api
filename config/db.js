@@ -18,15 +18,21 @@ const { Sequelize } = require("sequelize");
   User.hasMany(Comment, {
     as: "comments",
     foreignKey: "UserId",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   });
 
   Post.belongsTo(User, {
     as: "author",
     foreignKey: "UserId",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   });
   Post.hasMany(Comment, {
     as: "comments",
     foreignKey: "PostId",
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   });
 
   Comment.belongsTo(Post);
